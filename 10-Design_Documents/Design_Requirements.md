@@ -23,7 +23,6 @@ Note:  I expect the below paragraph to go away at some point.
   + We believe our robots shouldn't need to perform all of their cognitive processing internally, but rather have access to a more powerful source of information.  This source could be a computer on your LAN, or an internet based source.
   + Network connectivity is therefore required and in order to support our other goals and the current state of technology we believe that WIFI is the best option.  Other connectivity options like bluetooth and wireless UARTs would work, but have more limited range, bandwidth or lack the portability of WIFI.
   + Reference software TBD
-  + 
   
 ### Mobility
   + Mobility as it relates to the COG is really a matter of interface and optamization to what ever robot hardware is most appropriate for the given operating environment.  With the possible infinate variety of robotic hardware to interface with it is probably best to offload the actual motor drivers and high current power supplies outside of the COG and interface with them via a data bus of some kind.  Therefore, the following breakdown will focus on various mobility types and their impact on the COG itself.
@@ -41,12 +40,16 @@ Note:  I expect the below paragraph to go away at some point.
 
   + Due to inexpensive device availability I propose a 3 axis accel/gyro sensor be included in the COG
 
-# Portability
+### Portability
   + Portability really comes down to being able to set up and operate the robot in as many locations as possible. To support this goal I propose the COG have the following features.
     - Ad-hoc WIFI
       - While WIFI is very prevalant, allowing our bots the ability to operate on an ad-hoc netowrk makes location options essentially limitless.  As long as you have a wireless device that supports ad-hoc, your bot can operate
     - Low Power
       - While not strictly necessary, in some places it is difficult to source power for bot charging (e.g. out camping) so a low power COG would allow for better operation.
+      - I propose 3 things to keep power low.
+        1. Switching requlators should be used wherever possible.
+        2. If low power hardware can be sourced for minimal cost increase, it be done.
+        3. Weight be kept to a minimum.
     
 ### Navigation
   + Navigaion can be done in many ways.  Its possible that the COG won't be able to support them all, but several major ones and their requirements are listed below.
@@ -82,10 +85,19 @@ Note:  I expect the below paragraph to go away at some point.
       -This requires 2 video or still cameras which equates to a double hit to bandwidth and processing.  The cameras should be within budget, but I propose that the ripple effects to processing and network hardware be evaluated before approval for integration in the COG. 
 
 ### Manipulation
-
+  + The ability to manipulate the environment (e.g. arms and hands, tools, weapons...)
+  + I propose that these would have no additional impact on the COG as they would share data bus communications with the propulsion systems and sensors with the navigation systems.
+  
 ### Affordability
   + Reflecting on my personal finances and that I pursue robotics as a hobby I would set a goal price of $100.00 for a complete COG.  This, of course, does not include development costs.
 
 ### Interactivity
+  + The ability to respond to inputs from the environment (e.g. vocal/gestured commands, radio control, response to moving objects, loud noises...)
+  + I propose that impacts to the COG be limited to sensors that share purpose with other core goals.
+
 ### Robustness
+  + Not that we would designing something that wasn't robust, this goal is focused more on making the COG "bullet proof" or at least "idiot proof".
+  + This being a stretch goal, and since the initial design of the COG isn't done, I propose this goal be shelved at least until a working COG prototype exists to evaluate.
+
 ### World Domination
+  + I'm tired after only writing this document.  World domination sounds exhausting.
