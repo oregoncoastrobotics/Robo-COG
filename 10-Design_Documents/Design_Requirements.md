@@ -1,4 +1,4 @@
-R-COG Design
+COG Design
 ============
 
 Note:  I expect the below paragraph to go away at some point.
