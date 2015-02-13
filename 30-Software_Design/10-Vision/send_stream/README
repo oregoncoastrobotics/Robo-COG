@@ -5,4 +5,7 @@ Installed the pkg-config package
 Installed the linux-kernel-headers package which turns out was linux-libc-dev and was already installed (by build-essentials?)
 Installed the libv4l-dev package
 
-I cd to ~ make a bin directory there copy the build_send_stream and send_stream.c files to ~ and run build_send_stream
+I cd to ~ make a bin directory (mkdir bin) then copy the build_send_stream and send_stream.c files to ~ and run build_send_stream
+
+send_stream -c0 -s -f -d /dev/video0
+
