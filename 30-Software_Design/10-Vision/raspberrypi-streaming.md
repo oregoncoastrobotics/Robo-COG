@@ -29,43 +29,32 @@ Follow the instruction here http://blog.miguelgrinberg.com/post/how-to-build-and
 	Add the following line to the file /etc/apt/sources.list :
 	deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/ wheezy main
 
-$ sudo apt-get update
-$ sudo apt-get install uv4l uv4l-raspicam
+	$ sudo apt-get update
+	$ sudo apt-get install uv4l uv4l-raspicam
 
 1. Install software packages. 
 	```sh
 	cd ~/
 	sudo apt-get install libjpeg8-dev imagemagick libv4l-dev
 	sudo ln -s /usr/include/linux/videodev2.h /usr/include/linux/videodev.h
-	
-	```
-2. Then make a temp directory to download the MJPEG-Streamer zip file
-
-	```sh
-	mkdir ~/temp
-	cd /temp
-	wget http://sourceforge.net/code-snapshots/svn/m/mj/mjpg-streamer/code/mjpg-streamer-code-182.zip
-	unzip mjpg-streamer-code-182.zip
-	cd mjpg-streamer-code-182/mjpg-streamer
-	make mjpg_streamer input_file.so output_http.so
-	
-	sudo cp mjpg_streamer /usr/local/bin
-	sudo cp output_http.so input_file.so /usr/local/lib/
-	
-	```
-
-3. Now we should be able to  start the camera. The code below will start 
-the camera and a webserver on port 8080 that will stream the video. 
-To see run the code and open a browser and point it at `http://RASPBERRYPI_IP:8080`
-
-	```sh
-	mkdir /tmp/stream
-	raspistill --nopreview -w 640 -h 480 -bm -q 5 -o /tmp/stream/pic.jpg -tl 100 -t 9999999 -th 0:0:0
-	
-	LD_LIBRARY_PATH=/usr/local/lib mjpg_streamer -i "input_file.so -f /tmp/stream -n pic.jpg" -o "output_http.so -w /home/pi/temp/mjpg-streamer-code-182/mjpg-streamer/www"
 
 	```
-	----
+
+2. Then run `uv4l --driver raspicam --auto-video_nr --extension-presence=1`. This will create `/dev/video1`
+ 
+
+3. Then run `raspistill -o cam.jpg`
+
+## Troubleshooting
+
+```
+mmal: mmal_vc_component_create: failed to create component 'vc.ril.camera' (1:ENOMEM)
+mmal: mmal_component_create_core: could not create component 'vc.ril.camera' (1)
+mmal: Failed to create camera component
+mmal: main: Failed to create camera component
+mmal: Camera is not detected. Please check carefully the camera module is installed correctly
+```
+
 
 ###Commands used
 
