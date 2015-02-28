@@ -1,3 +1,13 @@
+#Usage 
+
+1. Edit `RCOG_Panel.config` to point at the camera's ip address and/or thebase LAN. 
+
+2. Run `RCOG_HTTP.py`
+
+3. If successful you should see output in the broswer at `http://<CAMERA-IP>:1337/` 
+
+
+
 2-9-15
 
 Live_Stream.py
