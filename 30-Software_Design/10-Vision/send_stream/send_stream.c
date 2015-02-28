@@ -800,10 +800,10 @@ static void close_device(void)
         fd = -1;
 }
 
-static void open_device(void)
+static void open_device_device(void)
 {
-        struct stat st;
-
+        struct stat s
+        debug ("Opening camera device\n");
         if (-1 == stat(dev_name, &st)) {
                 fprintf(stderr, "Cannot identify '%s': %d, %s\n",
                          dev_name, errno, strerror(errno));
@@ -822,6 +822,7 @@ static void open_device(void)
                          dev_name, errno, strerror(errno));
                 exit(EXIT_FAILURE);
         }
+        debug ("Finished opening camera device\n");
 }
 
 static void usage(FILE *fp, char **argv)
@@ -929,7 +930,9 @@ int main(int argc, char **argv)
         }
 
         open_device();
+        debug ("Initializing camera device\n");
         init_device();
+        debug ("Beginning capture\n");
         start_capturing();
         mainloop();
         stop_capturing();
