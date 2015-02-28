@@ -1,23 +1,11 @@
 To build send_stream I started with a debian based system and did the following:
 
+Download this repo and run `Robo-COG/30-Software_Design/10-Vision/send_steam/installer.sh`
 
-```
-sudo apt-get install build-essential -y
-sudo apt-get install pkg-config -y
-sudo apt-get install linux-libc-dev -y
-sudo apt-get install libv4l-dev -y
+This will create a `bin/` directory in your root folder. 
 
-mkdir ~/bin
-mkdir /tmp
 
-cp send_stream/build_send_stream.sh /tmp
-cp send_stream/send_stream.c /tmp
-
-# You may need to adjust 
-/tmp/send_stream -c0 -s -f -d /dev/video0
-cp tmp/send_stream ~/bin
-
-```
+Then run `send_stream -c0 -s -f -d /dev/video0`. You may need ot adjust the video0.
 
 Installed the build-essential package (sudo apt-get install build-essential), which includes gcc and standard c libraries
 Installed the pkg-config package
