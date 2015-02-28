@@ -154,12 +154,12 @@ static void server_listen (void)
 	                        close (clisockfd);  //close the bad socket
 				clisockfd = -1;
 	                }
-			debug ("Received message from client\n");
-			debug (recvintro);
-			if (strcmp (recvintro, "Hello RCOG") == 0)
-			{
+	                else
+	                {
+				debug ("Received message from client\n");
+				debug (recvintro);
 				clients = 1;
-			}
+	                }
 		}
 	}
 }
