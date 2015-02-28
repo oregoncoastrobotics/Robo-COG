@@ -12,6 +12,6 @@ cp build_send_stream.sh /tmp
 cp send_stream.c /tmp
 
 # You may need to adjust 
-/tmp/send_stream -c0 -s -f -d /dev/video0
+/tmp/build_send_stream.sh
 cp /tmp/send_stream ~/bin
 
