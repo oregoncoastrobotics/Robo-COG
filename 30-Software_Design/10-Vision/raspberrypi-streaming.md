@@ -40,13 +40,14 @@ Follow the instruction here http://blog.miguelgrinberg.com/post/how-to-build-and
 
 	```
 
-2. Then run `uv4l --driver raspicam --auto-video_nr --extension-presence=1`. This will create `/dev/video1`
+2. Then run `uv4l --driver raspicam --auto-video_nr --extension-presence=1`. This will create `/dev/video0`
  
 
 3. Then run `raspistill -o cam.jpg`
 
 ## Troubleshooting
 
+When i ran `raspistill -o cam.jpg` I got the error below, I switched cameras and camera plug and then it went away. 
 ```
 mmal: mmal_vc_component_create: failed to create component 'vc.ril.camera' (1:ENOMEM)
 mmal: mmal_component_create_core: could not create component 'vc.ril.camera' (1)
