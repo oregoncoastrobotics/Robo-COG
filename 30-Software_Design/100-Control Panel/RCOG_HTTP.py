@@ -224,16 +224,17 @@ class rcog_vid (object):
 
 		self.frame_buff = self.frame_buff [self.frame_end + 2:]
 		
-		if self.debug_count = 5:
+		if self.debug_count == 5:
 			debug_file = open ("debug_image.test", "w")
 			debug_file.write (self.current_frame)
 			debug_file.close ()
 
 	def update (self):
+		self.debug_count += 1
 		if self.status == "ON":
 			self.vid_recv ()
 			return self.current_frame
-		self.debug_count += 1
+		
 
 class IPCameraApp(object):
     def __init__ (self, bot):

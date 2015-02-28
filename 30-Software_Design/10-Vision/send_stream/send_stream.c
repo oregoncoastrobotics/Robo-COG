@@ -154,12 +154,17 @@ static void server_listen (void)
 	                        close (clisockfd);  //close the bad socket
 				clisockfd = -1;
 	                }
-	                else
-	                {
+			else
+			{
 				debug ("Received message from client\n");
 				debug (recvintro);
-				clients = 1;
-	                }
+				debug ("\n");
+				if (strstr (recvintro, "Hello RCOG") != NULL)
+				{
+					clients = 1;
+					debug ("Client wants to talk!\n");
+				}
+			}
 		}
 	}
 }
@@ -803,7 +808,7 @@ static void close_device(void)
 static void open_device(void)
 {
         struct stat st;
-        debug ("Opening camera device\n");
+
         if (-1 == stat(dev_name, &st)) {
                 fprintf(stderr, "Cannot identify '%s': %d, %s\n",
                          dev_name, errno, strerror(errno));
@@ -822,7 +827,6 @@ static void open_device(void)
                          dev_name, errno, strerror(errno));
                 exit(EXIT_FAILURE);
         }
-        debug ("Finished opening camera device\n");
 }
 
 static void usage(FILE *fp, char **argv)
@@ -930,9 +934,7 @@ int main(int argc, char **argv)
         }
 
         open_device();
-        debug ("Initializing camera device\n");
         init_device();
-        debug ("Beginning capture\n");
         start_capturing();
         mainloop();
         stop_capturing();
