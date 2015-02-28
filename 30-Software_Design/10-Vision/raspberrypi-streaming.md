@@ -22,6 +22,16 @@ Follow the instruction here http://blog.miguelgrinberg.com/post/how-to-build-and
 
 **NOTE** First make sure the camera is enabled. Run `sudo raspi-config` and enable the camera.
 
+1. Install UV4L
+	
+	To install UV4L open a terminal and type the following commands:
+	$ curl http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add -
+	Add the following line to the file /etc/apt/sources.list :
+	deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/ wheezy main
+
+$ sudo apt-get update
+$ sudo apt-get install uv4l uv4l-raspicam
+
 1. Install software packages. 
 	```sh
 	cd ~/
