@@ -72,6 +72,8 @@ class rcog_vid (object):
 		self.init_net ()
 
 		self.write_config ()
+		
+		self.debug_count = 0
 
 		#DHT for MJPEG to JPG conversion
 		self.Has_DHT = False
@@ -221,11 +223,17 @@ class rcog_vid (object):
 		self.current_frame = self.Header_Start + str(len(self.current_frame)) + "\r\n\r\n" + self.frame_buff[self.frame_start: self.frame_end + 2] + "\r\n"
 
 		self.frame_buff = self.frame_buff [self.frame_end + 2:]
+		
+		if self.debug_count = 5:
+			debug_file = open ("debug_image.test", "w")
+			debug_file.write (self.current_frame)
+			debug_file.close ()
 
 	def update (self):
 		if self.status == "ON":
 			self.vid_recv ()
 			return self.current_frame
+		self.debug_count += 1
 
 class IPCameraApp(object):
     def __init__ (self, bot):
