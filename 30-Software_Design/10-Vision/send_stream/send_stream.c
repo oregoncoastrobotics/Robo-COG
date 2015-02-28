@@ -99,16 +99,68 @@ static int xioctl(int fh, int request, void *arg)
 
 static void server_listen (void)
 {
+	int clients = 0;
+	char introstring[100] = "This is RCOG";
+	ssize_t introsize = sizeof(introstring);
+	char recvintro[10];
+
+//	struct timeval timeout;
+//	timeout.tv_sec = 1;
+//	timeout.tv_usec = 0;
+
 	fprintf (stderr, "Listening for a Client Connection\n");
 	//listen for incoming connections
 	listen (sd, 5);
 
-	//Accept incoming connection
-	clilen = sizeof(cli_addr);
-	clisockfd = accept (sd, (struct sockaddr *) &cli_addr, &clilen);
-	if (clisockfd < 0)
+	//Verify client is looking for us
+	while (clients == 0)
 	{
-		errno_exit("ERROR on accept");
+		//Accept incoming connection
+		clilen = sizeof(cli_addr);
+		clisockfd = accept (sd, (struct sockaddr *) &cli_addr, &clilen);
+		if (clisockfd < 0)
+		{
+			errno_exit("ERROR on accept");
+		}
+		debug("accepted connection\n");
+        	/*if (setsockopt (clisockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0)
+                	print_errno("setsockopt failed\n");
+			close (clisockfd);  //close the bad socket
+			clisockfd = -1;
+
+	        if (setsockopt (clisockfd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) < 0 && clisockfd > 0)
+        	        print_errno("setsockopt failed\n");
+			close (clisockfd);  //close the bad socket
+			clisockfd = -1;*/
+
+		if (clisockfd >= 0)
+		{
+			debug("sending intro message\n");
+			ssize_t len = send(clisockfd, introstring, introsize, MSG_NOSIGNAL);
+	                if (len < 0)
+	                {
+	               		print_errno ("socket send failed");
+	                        close (clisockfd);  //close the bad socket
+				clisockfd = -1;
+	                }
+		}
+
+		if (clisockfd >= 0)
+		{
+			ssize_t len = recv(clisockfd, recvintro, sizeof (recvintro), 0);
+			if (len < 0)
+			{
+	                        print_errno ("socket send failed");
+	                        close (clisockfd);  //close the bad socket
+				clisockfd = -1;
+	                }
+			debug ("Received message from client\n");
+			debug (recvintro);
+			if (strcmp (recvintro, "Hello RCOG") == 0)
+			{
+				clients = 1;
+			}
+		}
 	}
 }
 
