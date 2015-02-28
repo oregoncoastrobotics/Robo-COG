@@ -224,7 +224,7 @@ class rcog_vid (object):
 
 		self.frame_buff = self.frame_buff [self.frame_end + 2:]
 		
-		if self.debug_count = 5:
+		if self.debug_count == 5:
 			debug_file = open ("debug_image.test", "w")
 			debug_file.write (self.current_frame)
 			debug_file.close ()
