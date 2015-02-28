@@ -800,7 +800,7 @@ static void close_device(void)
         fd = -1;
 }
 
-static void open_device_device(void)
+static void open_device(void)
 {
         struct stat st;
         debug ("Opening camera device\n");
