@@ -1,3 +1,4 @@
+#Usage 
 
 1. Edit `RCOG_Panel.config` to point at the camera's ip address and/or thebase LAN. 
 
