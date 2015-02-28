@@ -13,5 +13,5 @@ cp send_stream/send_stream.c /tmp
 
 # You may need to adjust 
 /tmp/send_stream -c0 -s -f -d /dev/video0
-cp tmp/send_stream ~/bin
+cp /tmp/send_stream ~/bin
 
