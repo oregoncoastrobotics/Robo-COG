@@ -802,7 +802,7 @@ static void close_device(void)
 
 static void open_device_device(void)
 {
-        struct stat s
+        struct stat st;
         debug ("Opening camera device\n");
         if (-1 == stat(dev_name, &st)) {
                 fprintf(stderr, "Cannot identify '%s': %d, %s\n",
