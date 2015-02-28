@@ -1,5 +1,24 @@
 To build send_stream I started with a debian based system and did the following:
 
+
+```
+sudo apt-get install build-essential -y
+sudo apt-get install pkg-config -y
+sudo apt-get install linux-libc-dev -y
+sudo apt-get install libv4l-dev -y
+
+mkdir ~/bin
+mkdir /tmp
+
+cp send_stream/build_send_stream.sh /tmp
+cp send_stream/send_stream.c /tmp
+
+# You may need to adjust 
+/tmp/send_stream -c0 -s -f -d /dev/video0
+cp tmp/send_stream ~/bin
+
+```
+
 Installed the build-essential package (sudo apt-get install build-essential), which includes gcc and standard c libraries
 Installed the pkg-config package
 Installed the linux-kernel-headers package which turns out was linux-libc-dev and was already installed (by build-essentials?)
