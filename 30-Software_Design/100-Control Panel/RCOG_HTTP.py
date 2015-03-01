@@ -1,11 +1,9 @@
 #!/usr/bin/python
 #based on the ideas from http://synack.me/blog/implementing-http-live-streaming and https://gist.github.com/sakti/4761739
  
-from Queue import Queue
-from threading import Thread
 import socket
 import os.path
-from select import select
+
 from wsgiref.simple_server import WSGIServer, make_server, WSGIRequestHandler
 from SocketServer import ThreadingMixIn
  
@@ -197,6 +195,8 @@ class rcog_vid (object):
 		
 		self.frame_end = -1
 		bytesinframe = 0
+		has_DHT = False
+		past_scan_start = False
 
 		#The while loop below assembles frame data from chunks received 
 		#This assembly of frame data is based on the fact that TCP data should always arrive in-order to the application
@@ -215,6 +215,9 @@ class rcog_vid (object):
 					chunk = chunk [self.frame_start:]
 					self.frame_buff = self.frame_buff + chunk
 					bytesinframe += len (chunk)
+					#If this chunk has a DHT set the flag to true so we don't add another one later
+					if chunk.find ('\xFF\xC4') != -1:
+						has_DHT = True
 
 			#Now find the end (in the chunk)
 			elif self.frame_end < 0:
@@ -232,9 +235,14 @@ class rcog_vid (object):
 				else:
 					bytesinframe += len (chunk)
 					self.frame_buff = self.frame_buff + chunk
+					if not past_scan_start and not has_DHT:
+						if chunk.find ('\xFF\xC4') != -1:
+							has_DHT = True
+						if chunk.find ('\xFF\xDA') != -1:
+							past_scan_start = True
 
 		#Insert DHT table into frame buffer if it is missing
-		if self.frame_buff[2:4] != '\xFF\xC4':
+		if not has_DHT:
 			self.current_frame = '\xFF\xD8' + self.DHT + self.current_frame[2:]
 
 		#save the first 10 image frames for debug
