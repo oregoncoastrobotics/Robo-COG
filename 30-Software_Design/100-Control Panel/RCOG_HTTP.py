@@ -187,47 +187,64 @@ class rcog_vid (object):
 		self.capture_num += 1
 		pygame.image.save (self.image, "capture_image" + self.capture_num + ".jpg")
 
-	def vid_recv (self):
-		if len (self.frame_buff):
-			self.frame_start = self.frame_buff.find ('\xFF\xD8')
-		else:
-			self.frame_start = -1
+	def vid_recv (self):		
+		self.frame_start = self.frame_buff.find ('\xFF\xD8')
+
+		#If buffer contains beginning of this frame (left from last chunk of last frame)
+		if self.frame_start != -1:
+			self.frame_buff = self.frame_buff[self.frame_start:]
+			self.frame_start = 0
 		
 		self.frame_end = -1
 		bytesinframe = 0
 
+		#The while loop below assembles frame data from chunks received 
+		#This assembly of frame data is based on the fact that TCP data should always arrive in-order to the application
 		while self.frame_start < 0 or self.frame_end < 0:
 			chunk = self.cli_sock.recv(2048)
 
+			#if no data is received connectionn is broken
 			if chunk == '':
 				self.connected = False
 				raise RuntimeError("socket connection broken")
 
+			#Find the beginning of the frame, it should start with FFD8
 			if self.frame_start < 0:
 				self.frame_start = chunk.find ('\xFF\xD8')
-			if self.frame_end < 0:
+				if self.frame_start >= 0:  #we found the start of the frame, throw away any data before the start
+					chunk = chunk [self.frame_start:]
+					self.frame_buff = self.frame_buff + chunk
+					bytesinframe += len (chunk)
+
+			#Now find the end (in the chunk)
+			elif self.frame_end < 0:
 				self.frame_end = chunk.find ('\xFF\xD9')
-			if self.frame_end >= 0:
-				self.frame_end += len (self.frame_buff)
-				
+				#If we found the end in this chunk, add the rest of the frame and length
+				if self.frame_end >= 0:
+					self.frame_buff = self.frame_buff + chunk[:self.frame_end + 2]  #include the FFD9 frame end
+					self.current_frame = self.frame_buff
+					if len(chunk[self.frame_end + 2:]):
+						self.frame_buff = chunk[self.frame_end + 2:]
+					else:
+						self.frame_buff = ''
+					
+				#If not add the whole chunk to the frame
+				else:
+					bytesinframe += len (chunk)
+					self.frame_buff = self.frame_buff + chunk
 
-			self.frame_buff = self.frame_buff + chunk
+		#Insert DHT table into frame buffer if it is missing
+		if self.frame_buff[2:4] != '\xFF\xC4':
+			self.current_frame = '\xFF\xD8' + self.DHT + self.current_frame[2:]
 
-		bytesinframe = self.frame_end - self.frame_start
-
-		if self.frame_buff[self.frame_start + 2:self.frame_start + 4] != '\xFF\xC4':
-			self.frame_buff = self.frame_buff[self.frame_start:self.frame_start + 2] + self.DHT + self.frame_buff[self.frame_start+2:]
-			self.frame_end += len (self.DHT)
-
-
-		self.current_frame = self.Header_Start + str(len(self.current_frame)) + "\r\n\r\n" + self.frame_buff[self.frame_start: self.frame_end + 2] + "\r\n"
-
-		self.frame_buff = self.frame_buff [self.frame_end + 2:]
-		
-		if self.debug_count == 5:
-			debug_file = open ("debug_image.test", "w")
+		#save the first 10 image frames for debug
+		if self.debug_count < 11:
+			debug_file = open ("debug_image" + str(self.debug_count) + ".test", "w")
 			debug_file.write (self.current_frame)
 			debug_file.close ()
+
+		#Create current frame from data in frame buff
+		self.current_frame = self.Header_Start + str(len(self.current_frame)) + "\r\n\r\n" + self.current_frame + "\r\n"
 
 	def update (self):
 		self.debug_count += 1
