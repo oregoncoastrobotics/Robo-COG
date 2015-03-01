@@ -1,4 +1,4 @@
-#Usage 
+#Usage 3-1-15
 
 1. Edit `RCOG_Panel.config` to point at the camera's ip address and/or thebase LAN. 
 
@@ -6,9 +6,12 @@
 
 3. If successful you should see output in the broswer at `http://<CAMERA-IP>:1337/` 
 
+#Advanced Usage 3-1-5
+1. To set debug levels (how much printout info you see), change the DEBUG variable at the top of RCOG_NET_LINK.py.  The bigger the number, the more printout you'll see.
 
+2. To test connection to your bot without the HTTP server, set the TEST varialbe to True in RCOG_NET_LINK.py
 
-2-9-15
+2-9-15 -- Old
 
 Live_Stream.py
   -displays video stream
