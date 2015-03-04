@@ -16,6 +16,7 @@ git clone https://github.com/oregoncoastrobotics/Robo-COG.git
 
 This will put the built file named `send_stream` in `~/bin/`.
 
+---
 
 ### Running the service
 To run send_stream you need to tell it what device to use for the video feed.
@@ -27,14 +28,17 @@ Your camera device should show up in `/dev` as **videoN** where N could be and i
 
 ```
 uv4l --driver raspicam --auto-video_nr --extension-presence=1
+
+# Test the camera with 
+raspistill -o cam.jpg
+
 ```
 
-
-
+Once you have a device file start the service with
 
 ```
 # Adjust the /dev/video0 to whatever your device is
-`~/bin/send_stream -c0 -s -f -d /dev/video0`.
+~/bin/send_stream -c0 -s -f -d /dev/video0
 
 ```
 
@@ -45,31 +49,35 @@ Socket Send Buffer Size: 16384
 Listening for a Client Connection
 ```
 
-You will run the client in `Robo-COG/30-Software_Design/100-Control Panel`
+----
 
 
 
+### Running the web app client
 
-I cd to ~ make a bin directory (mkdir bin) then copy the build_send_stream and send_stream.c files to ~ and run build_send_stream
+1. Change directories to `/src/webapp/`
 
-send_stream -c0 -s -f -d /dev/video0
+1. Copy `config.template` to `config.local` and point it at the camera's IP address
+
+2. Run `RCOG_HTTP.py`
+
+3. If successful you should see output in the broswer at `http://<CAMERA-IP>:1337/` 
 
 
+### Advanced Usage
+1. To set debug levels (how much printout info you see), change the DEBUG variable at the top of RCOG_NET_LINK.py.  The bigger the number, the more printout you'll see.
 
-2-8-15
-send_stream
-  -Streams video to stdout or network via TCP
-  -Seems unstable, sometimes 8 FPS, sometimes 30 FPS on my machine (via wireless)
-  -Tries to listen again after client socket is closed, but only works in some situations
-  -Test with the following command line:  send_stream -d /dev/video0 -s -f -c 0
-  
+2. To test connection to your bot without the HTTP server, set the TEST varialbe to True in RCOG_NET_LINK.py
 
-  
+2-9-15 -- Old
+
+Live_Stream.py
+  -displays video stream
+  -can capture images from video stream
+  -displays FPS, IP address and Port
+  -can stop and start the stream, but send_stream has to be re-started
+
 Many things hard coded in above files that will need to be configurable later on.
 
-2-9-15
-  -Sability problem seems to be have been with receiving app, stable at 30FPS now
-  -Added cross-compiles rpi binary to bin
-  -Test with the following command line:  send_stream -d /dev/video0 -s -f -c 0
-  -Would like to change to config file rather than command line at some point
-  -Need to add support for other video types/settings and negotiation with control panel
+Live_Video_Server_Test.py hosts a simple html web page that shows video.  Frame rates are slow and very few clients can connect to the stream before it crashes.  Threading needs to be implemented to fix these problems.  IP addresses are hard coded.  Change for your LAN and html port connection desires.
+

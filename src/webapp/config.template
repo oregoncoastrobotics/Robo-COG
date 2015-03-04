@@ -1,0 +1,4 @@
+RCOG_IP: 192.168.0.108
+RCOG_IP: 192.168.0.108
+# If it cannot find a server at RCOG_IP is will scan this
+LAN_BASE: 192.168.0.
