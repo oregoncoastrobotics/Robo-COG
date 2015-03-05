@@ -3,8 +3,12 @@
 import socket
 import os.path
 
+#imported for TEST only
+import RCOG_FIND_FACES
+import dlib
+
 TEST = False
-DEBUG = 1
+DEBUG = 0
 
 def debug (data, number):
 	if number <= DEBUG:
@@ -12,8 +16,11 @@ def debug (data, number):
  
 class rcog_vid (object):
 	def __init__(self):
-		self.config_name = "config.local"
-		self.IP = "192.168.1.108"
+		self.find_face = True
+		self.face = RCOG_FIND_FACES.find_faces ()
+
+		self.config_name = "RCOG_Panel.config"
+		self.IP = "127.0.0.1"
 		self.Port = 27777
 		self.host_base = ""
 		self.capture_num = 0
@@ -113,6 +120,10 @@ class rcog_vid (object):
 				self.IP = addr
 
 	def init_net (self):
+		#Attempt to connect to localhost RCOG first
+		debug ("Trying to connect to RCOG at: " + self.IP, 1)
+		self.connect_rcog (self.IP, 1)
+
 		#search for last rcog ip in config file
 		for line in self.config:
 			if "RCOG_IP:" in line:
@@ -215,23 +226,30 @@ class rcog_vid (object):
 		if not self.has_DHT:
 			self.current_frame = '\xFF\xD8' + self.DHT + self.current_frame[2:]
 
-		#save the first 10 image frames for debug
-		if self.frame_count < 11 and DEBUG > 2:
-			debug_file = open ("debug_image" + str(self.frame_count) + ".jpg", "w")
-			debug_file.write (self.current_frame)
-			debug_file.close ()
+		if self.find_face:
+			self.face_rects, self.current_frame = self.face.detect (self.current_frame)
 
 		#Add stream header to current frame
-		self.current_frame = self.Header_Start + str(len(self.current_frame)) + "\r\n\r\n" + self.current_frame + "\r\n"
+		if not TEST:
+			self.current_frame = self.Header_Start + str(len(self.current_frame)) + "\r\n\r\n" + self.current_frame + "\r\n"
 
 	def update (self):
 		self.frame_count += 1
 		if self.status == "ON":
 			self.vid_recv ()
-			return self.current_frame
+				
 		
 if __name__ == '__main__' and TEST:
 	bot = rcog_vid ()
+	win = dlib.image_window()
+	face = RCOG_FIND_FACES.find_faces ()	
+
 	while bot.connected and bot.frame_count < 10:
 		bot.update ()
+		face_rects, img = face.detect (bot.current_frame)
+
+		debug_file = open ("debug_image" + str(bot.frame_count) + ".jpg", "w")
+		debug_file.write (img)
+		debug_file.close ()
+
 	bot.stop ()

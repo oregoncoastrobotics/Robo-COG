@@ -42,9 +42,9 @@ ERROR_404 = """
 </html>
 """
 
-class IPCameraApp(object):
-    def __init__ (self, bot):
-	self.bot = bot
+class HTTP_Server(object):
+    def __init__ (self):
+	self.bot = RCOG_NET_LINK.rcog_vid ()
  
     def __call__(self, environ, start_response):    
         if environ['PATH_INFO'] == '/':
@@ -65,15 +65,16 @@ class IPCameraApp(object):
     def stream(self, start_response):
         start_response('200 OK', [('Content-type', 'multipart/x-mixed-replace; boundary=--rcognition')])
         while True:
-            yield self.bot.update ()
-        debug ('Lost input stream from', self.bot.IP)
- 
+            yield self.mk_image ()
+
+    def mk_image (self): #Generates the jpg image that goes to the browser
+	self.bot.update ()
+
+	return self.bot.current_frame
 
 if __name__ == '__main__':
-	bot = RCOG_NET_LINK.rcog_vid ()
-	if bot.connected:
 		#Launch an instance of wsgi server
-		app = IPCameraApp(bot)
+		app = HTTP_Server()
 		port = 1337
 		debug ('Launching camera server on port: ' + str (port))
 		httpd = create_server('', port, app) 
