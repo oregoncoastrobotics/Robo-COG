@@ -11,7 +11,7 @@
 
 2. To test connection to your bot without the HTTP server, set the TEST varialbe to True in RCOG_NET_LINK.py
 
-2-9-15
+2-9-15 -- Old
 
 Live_Stream.py
   -displays video stream
