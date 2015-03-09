@@ -4,7 +4,7 @@
 
 2. Extract dlib.
 
-3. Install cmake, libboost and skimage and skimage-lib (sudo apt-get install libboost-python-dev cmake python-skimage python-skimage-lib).
+3. Install cmake and libboost (sudo apt-get install libboost-python-dev cmake).
 
 4. In the extracted dlib navigate to the python_examples folder.
 

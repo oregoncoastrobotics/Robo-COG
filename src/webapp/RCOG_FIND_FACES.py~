@@ -1,0 +1,75 @@
+#!/usr/bin/python
+# This face detector uses the dlib library
+
+import sys
+
+import dlib
+#from skimage import io
+#from skimage.draw import line, set_color
+import Image, ImageDraw
+import numpy
+import cStringIO
+
+TEST = False
+
+DEBUG = False
+def debug (data):
+	if DEBUG:
+		print data
+
+class find_faces (object):
+	def __init__ (self):
+		self.detector = dlib.get_frontal_face_detector()
+		
+		if TEST:
+			self.win = dlib.image_window()
+
+	def detect (self, image):
+		debug("Loading image")
+		in_data = Image.open(cStringIO.StringIO(image)) 
+		data = numpy.array(in_data)
+		#data = io.imread(cStringIO.StringIO(image))
+		# The 1 in the second argument indicates that we should upsample the image
+		# 1 time.  This will make everything bigger and allow us to detect more
+		# faces.
+		dets = self.detector(data)
+		debug ("Number of faces detected: {}".format(len(dets)))
+
+		print str(len(dets))
+
+		if len(dets) > 0:
+			draw = ImageDraw.Draw(in_data)
+
+			#if show rects is on?
+			for detect in dets:
+				draw.rectangle ([detect.left(), detect.top(), detect.right(), detect.bottom()], outline = (0, 200, 0))
+				#rr1, cc1 = line(detect.top(), detect.left(), detect.top(), detect.right())
+				#rr2, cc2 = line(detect.top(), detect.right(), detect.bottom(), detect.right())
+				#rr3, cc3 = line(detect.bottom(), detect.right(), detect.bottom(), detect.left())
+				#rr4, cc4 = line(detect.bottom(), detect.left(), detect.top(), detect.left())
+				#set_color(data, (rr1, cc1), 1)
+				#set_color(data, (rr2, cc2), 1)
+				#set_color(data, (rr3, cc3), 1)
+				#set_color(data, (rr4, cc4), 1)
+			del draw
+		
+		img = cStringIO.StringIO()
+
+		#out_data  = Image.fromarray (data.astype(numpy.uint8))
+		in_data.save (img, format='JPEG')
+
+		#io.imsave (img, data)
+		img.seek (0)
+
+		if DEBUG:
+			for k, d in enumerate(dets):
+				debug ("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(k, d.left(), d.top(), d.right(), d.bottom()))
+		if TEST:
+			
+		
+			self.win.clear_overlay()
+			self.win.set_image(data)
+			self.win.add_overlay(dets)
+
+		return dets, img.read () #this is a dlib rectangles object with a rectangle around each detected face
+
